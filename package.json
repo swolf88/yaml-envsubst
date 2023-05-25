@@ -11,6 +11,9 @@
   "scripts": {
     "start": "node ./src/index.js ./kubernetes-template.yaml ./kubernetes.yaml"
   },
+  "engines": {
+    "node": ">=12.x.x <=16.x.x"
+  },
   "bin": {
     "yaml-envsubst": "./src/index.js"
   },
