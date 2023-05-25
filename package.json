@@ -1,0 +1,30 @@
+{
+  "name": "@dsolodky/yaml-envsubst",
+  "private": false,
+  "version": "1.0.0",
+  "description": "envsubst tool for yaml files (especially for kubernetes yaml files)",
+  "main": "./src/index.js",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "yaml": "^2.3.0"
+  },
+  "scripts": {
+    "start": "node ./src/index.js ./kubernetes-template.yaml ./kubernetes.yaml"
+  },
+  "bin": {
+    "yaml-envsubst": "./src/index.js"
+  },
+  "keywords": [
+    "k8s",
+    "kubernetes",
+    "envsubst",
+    "gitlab-ci",
+    "environment variables"
+  ],
+  "author": "SWolf",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/lodash": "^4.14.194"
+  },
+  "files": ["src/**/*.js"]
+}
