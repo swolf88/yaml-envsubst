@@ -1,7 +1,7 @@
 {
   "name": "@dsolodky/yaml-envsubst",
   "private": false,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "envsubst tool for yaml files (especially for kubernetes yaml files)",
   "main": "./src/index.js",
   "dependencies": {
