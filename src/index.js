@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const YAML = require("yaml");
 const process = require("process");
 const fs = require("fs/promises");
@@ -18,7 +20,9 @@ function substituteDeep(obj) {
   if (Array.isArray(obj)) {
     return obj.map((item) => substituteDeep(item));
   } else if (typeof obj === "string") {
-    return obj.replace(envVarRegEx, (match, envVarName) => substituteDeep(getEnv(envVarName)));
+    return obj.replace(envVarRegEx, (match, envVarName) =>
+      substituteDeep(getEnv(envVarName))
+    );
   } else if (typeof obj === "object") {
     const keys = _.keys(obj);
     let result = {};
