@@ -5,11 +5,12 @@
   "description": "envsubst tool for yaml files (especially for kubernetes yaml files)",
   "main": "./src/index.js",
   "dependencies": {
+    "commander": "^10.0.1",
     "lodash": "^4.17.21",
     "yaml": "^2.3.0"
   },
   "scripts": {
-    "start": "node ./src/index.js ./kubernetes-template.yaml ./kubernetes.yaml"
+    "start": "node ./src/index.js ./kubernetes.yaml ./kubernetes-output.yaml"
   },
   "engines": {
     "node": ">=14.x.x <=16.x.x"
