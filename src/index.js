@@ -11,11 +11,16 @@ const envVarRegEx = /\$\{([a-zA-Z][a-zA-Z0-9_]+)\}/gm;
 const envVarKeysRegEx = /^\$\{([a-zA-Z][a-zA-Z0-9_]+)\}$/gm;
 
 function getEnv(envVarName, ignoreUnexisting) {
-  const result = process.env[envVarName];
+  let result = process.env[envVarName];
   if (typeof result === "undefined") {
     if (!ignoreUnexisting)
-      throw new Error(`Envronment variable ${envVarName} is not defined`);
-    result = "";
+      throw new Error(`Environment variable ${envVarName} is not defined`);
+    else {
+      console.warn(
+        `[warn] Environment variable ${envVarName} is not defined, using empty value instead.`
+      );
+      result = "";
+    }
   }
   return result;
 }
@@ -86,4 +91,4 @@ program
 
 program.parse();
 
-main(program.args[0], program.args[1], program.opts.ignore);
+main(program.args[0], program.args[1], program.opts().ignore);
