@@ -10,10 +10,10 @@ const _ = require("lodash");
 const envVarRegEx = /\$\{([a-zA-Z][a-zA-Z0-9_]+)\}/gm;
 const envVarKeysRegEx = /^\$\{([a-zA-Z][a-zA-Z0-9_]+)\}$/gm;
 
-function getEnv(envVarName, ignoreUnexisting) {
+function getEnv(envVarName, ignoreNonexisting) {
   let result = process.env[envVarName];
   if (typeof result === "undefined") {
-    if (!ignoreUnexisting)
+    if (!ignoreNonexisting)
       throw new Error(`Environment variable ${envVarName} is not defined`);
     else {
       console.warn(
@@ -25,12 +25,12 @@ function getEnv(envVarName, ignoreUnexisting) {
   return result;
 }
 
-function substituteDeep(obj, ignoreUnexisting) {
+function substituteDeep(obj, ignoreNonexisting) {
   if (Array.isArray(obj)) {
-    return obj.map((item) => substituteDeep(item, ignoreUnexisting));
+    return obj.map((item) => substituteDeep(item, ignoreNonexisting));
   } else if (typeof obj === "string") {
     return obj.replace(envVarRegEx, (match, envVarName) =>
-      substituteDeep(getEnv(envVarName, ignoreUnexisting), ignoreUnexisting)
+      substituteDeep(getEnv(envVarName, ignoreNonexisting), ignoreNonexisting)
     );
   } else if (typeof obj === "object") {
     const keys = _.keys(obj);
@@ -39,26 +39,26 @@ function substituteDeep(obj, ignoreUnexisting) {
       const matchKey = envVarKeysRegEx.exec(key);
       if (matchKey) {
         //key refers to env var, which is a peace of yaml
-        const yamlEnvVar = getEnv(matchKey[1], ignoreUnexisting);
+        const yamlEnvVar = getEnv(matchKey[1], ignoreNonexisting);
         const additionalYaml = substituteDeep(
           YAML.parse(yamlEnvVar),
-          ignoreUnexisting
+          ignoreNonexisting
         );
         result = _.merge(additionalYaml, result);
       } else {
         //key is a normal key
-        result[key] = substituteDeep(obj[key], ignoreUnexisting);
+        result[key] = substituteDeep(obj[key], ignoreNonexisting);
       }
     }
     return result;
   } else return obj;
 }
 
-async function main(inputFileName, outputFileName, ignoreUnexisting) {
+async function main(inputFileName, outputFileName, ignoreNonexisting) {
   try {
     let fileText = "";
     if (!inputFileName || !existsSync(inputFileName)) {
-      if (!ignoreUnexisting) throw new Error("Input file does not exists");
+      if (!ignoreNonexisting) throw new Error("Input file does not exists");
     } else {
       fileText = await fs.readFile(inputFileName, { encoding: "utf8" });
     }
@@ -70,7 +70,7 @@ async function main(inputFileName, outputFileName, ignoreUnexisting) {
     let isFirstBlock = true;
     for (const block of blocks) {
       const data = YAML.parse(block);
-      const newData = substituteDeep(data, ignoreUnexisting);
+      const newData = substituteDeep(data, ignoreNonexisting);
       let lines = [...(isFirstBlock ? [] : ["---"]), YAML.stringify(newData)];
       await fs.appendFile(outputFileName, lines.join("\n"), {
         encoding: "utf8",
