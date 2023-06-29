@@ -38,7 +38,7 @@ function substituteDeep(obj, ignoreUnexisting) {
     for (const key of keys) {
       const matchKey = envVarKeysRegEx.exec(key);
       if (matchKey) {
-        //key referes to env var, which is a peace of yaml
+        //key refers to env var, which is a peace of yaml
         const yamlEnvVar = getEnv(matchKey[1], ignoreUnexisting);
         const additionalYaml = substituteDeep(
           YAML.parse(yamlEnvVar),
@@ -56,14 +56,16 @@ function substituteDeep(obj, ignoreUnexisting) {
 
 async function main(inputFileName, outputFileName, ignoreUnexisting) {
   try {
+    let fileText = "";
     if (!inputFileName || !existsSync(inputFileName)) {
-      throw new Error("Input file does not exists");
+      if (!ignoreUnexisting) throw new Error("Input file does not exists");
+    } else {
+      fileText = await fs.readFile(inputFileName, { encoding: "utf8" });
     }
     if (!outputFileName) {
-      throw new Error("Output file does not exists");
+      throw new Error("Output file arguments is not specified");
     }
     if (existsSync(outputFileName)) await fs.rm(outputFileName);
-    const fileText = await fs.readFile(inputFileName, { encoding: "utf8" });
     const blocks = fileText.split("\n---\n");
     let isFirstBlock = true;
     for (const block of blocks) {
