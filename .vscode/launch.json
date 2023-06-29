@@ -13,7 +13,7 @@
             ],
             "program": "${workspaceFolder}/src/index.js",
             "args": [
-                "--ignore",
+                "--ignore-missing-variables",
                 "./kubernetes.yaml",
                 "./kubernetes-output.yaml"
             ]
